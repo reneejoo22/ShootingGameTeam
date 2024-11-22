@@ -8,6 +8,7 @@ import javax.swing.*;
 // 네프 12주차 체크포인트
 // 저장확인
 // 3333... cnrkfdfd
+//ㅈ//ㅈㅂㅂㅈ/ㅈㅂㄷㅂㅈㄷㅈ
 public class ShootingGame1 extends JPanel implements ActionListener, KeyListener {
     private Timer timer;
     private Image playerImage, backgroundImage, monsterImage, missileImage, monsterWeapon;
