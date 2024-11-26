@@ -133,7 +133,7 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
     }
 
     private void updateBackground() {
-        backgroundY += 15;
+        backgroundY += 50;
         if (backgroundY > 0) {
             backgroundY = -backgroundImage.getHeight(null) + getHeight();
         }
