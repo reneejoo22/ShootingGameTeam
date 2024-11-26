@@ -217,6 +217,7 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
             bulletCount--;
             if (bulletCount == 0) {
                 lastReloadTime = System.currentTimeMillis(); // 재장전 시작
+                playSound("/audio/재장전.wav");
             }
         }
     }
