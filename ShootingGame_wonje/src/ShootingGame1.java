@@ -5,10 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import javax.swing.*;
 
-// 네프 12주차 체크포인트
-// 저장확인
-// 3333... cnrkfdfd
-//ㅈ//ㅈㅂㅂㅈ/ㅈㅂㄷㅂㅈㄷㅈ
 public class ShootingGame1 extends JPanel implements ActionListener, KeyListener {
     private Timer timer;
     private Image playerImage, backgroundImage, monsterImage, missileImage, monsterWeapon;
@@ -29,11 +25,11 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
     private int monsterRespawnCounter = 0;
 
     public ShootingGame1() {
-        playerImage = new ImageIcon("images/spaceship5.png").getImage();
+        playerImage = new ImageIcon("images/soldier.png").getImage();
         backgroundImage = new ImageIcon("images/back2.png").getImage();
-        monsterImage = new ImageIcon("images/monster1.png").getImage();
+        monsterImage = new ImageIcon("images/stage 1 zombie.png").getImage();
         missileImage = new ImageIcon("images/bullet1.png").getImage();
-        monsterWeapon = new ImageIcon("images/virus1.png").getImage();
+        monsterWeapon = new ImageIcon("images/zomebie's fireball.png").getImage();
 
         keys = new boolean[256];
         missiles = new ArrayList<>();
@@ -137,7 +133,7 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
     }
 
     private void updateBackground() {
-        backgroundY += 5;
+        backgroundY += 15;
         if (backgroundY > 0) {
             backgroundY = -backgroundImage.getHeight(null) + getHeight();
         }
