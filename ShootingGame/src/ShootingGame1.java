@@ -90,7 +90,7 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
         setPreferredSize(new Dimension(400, 800));
     }
 
- // 몬스터 재생성 메서드 수정_(스테이지 추가하면 1,2,3 마다 다르게 조정 필요, 몬스터 체력, 속도, 이미지)
+ // 몬스터 재생성 메서드 수정_(스테이지 추가하면 1,2,3 마다 다르게 조정 필요, 몬스터 체력, 속도, 이미지) 
     private void spawnMonster() {
     	monsterVisible = true;
     	monster = new Monster((int) (Math.random() * (400 - monsterImage.getWidth(null))), 0, 
