@@ -6,7 +6,7 @@ import java.awt.Rectangle;
 
 public class Monster {
     private Rectangle bounds; // 몬스터의 위치와 크기를 나타내는 Rectangle
-    private int health; // 몬스터의 체력
+    private int health; // 몬스터의 체력 
     private int speedX; // 몬스터의 X 이동 속도
     private int speedY; // 몬스터의 Y 이동 속도
     private int directionX; // X 이동 방향

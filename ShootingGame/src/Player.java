@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 
 public class Player {
     private int x, y; // 위치
-    private int health; // 체력
+    private int health; // 체력 
     private final Image image; // 이미지
     private final int speed = 5; // 이동 속도
 

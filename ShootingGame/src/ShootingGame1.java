@@ -17,7 +17,7 @@ import javax.swing.Timer;
 
 // ShootingGame 클래스 
 public class ShootingGame1 extends JPanel implements ActionListener, KeyListener {
-    private Timer timer; // 게임 업데이트를 위한 타이머
+    private Timer timer; // 게임 업데이트를 위한 타이머 
     private Image playerImage; // 플레이어 이미지
     private Image backgroundImage; // 배경 이미지
     private Image monsterImage; // 몬스터 이미지
