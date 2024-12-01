@@ -1,3 +1,11 @@
-/Stage.class
+/GameManager.class
+/Movable.class
+/GameObject.class
+/MonsterWeapon.class
+/BackGround.class
+/Background.class
 /Monster.class
 /Player.class
+/ShootingGame.class
+/ShootingGame1.class
+/Stage.class

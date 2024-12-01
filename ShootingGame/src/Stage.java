@@ -1,5 +1,5 @@
 public class Stage {
-    private int stageNumber; // 스테이지 번호 
+    private int stageNumber; // 스테이지 번호  
     private int timeLimit; // 각 스테이지의 시간 제한 (초 단위)
     private boolean isCleared; // 스테이지 클리어 여부
 

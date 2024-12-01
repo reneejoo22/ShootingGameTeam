@@ -1,3 +1,5 @@
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 //import java.util.ArrayList;
@@ -14,11 +16,10 @@ public class Monster {
     private Image image; // 몬스터 이미지
     private boolean isAlive; // 몬스터의 생사 여부
     
-    //private List<Rectangle> weapons; // 몬스터의 공격 무기 리스트
 
     // 생성자
     public Monster(int x, int y, int width, int height, int initialHealth, int speedX, int speedY, 
-    		Image image) {
+    		Image image) {	//모습을 바꿔야해서 이미지를 받아야
     	
     	this.bounds = new Rectangle(x, y, image.getWidth(null), image.getHeight(null));
         this.health = initialHealth;
@@ -33,28 +34,6 @@ public class Monster {
         this.isAlive = true;
     
     }
-/*
-    // 무기 발사 메소드
-    public void spawnWeapon(Image monsterWeaponImage) {
-        Rectangle weapon = new Rectangle(bounds.x + bounds.width / 2 - monsterWeaponImage.getWidth(null) / 2,
-                                         bounds.y + bounds.height,
-                                         monsterWeaponImage.getWidth(null),
-                                         monsterWeaponImage.getHeight(null));
-        weapons.add(weapon);
-    }
-
-    /*
-    // 무기 이동 메소드
-    public void updateWeapons(int screenHeight) {
-        for (Iterator<Rectangle> it = weapons.iterator(); it.hasNext();) {
-            Rectangle weapon = it.next();
-            weapon.y += 5; // 무기 속도
-            if (weapon.y > screenHeight) {
-                it.remove(); // 화면 밖으로 나가면 제거
-            }
-        }
-    }
-    */
  
     // 몬스터 좌우로만 위치를 업데이트하는 메소드
     public void updatePosition(int screenWidth) {
@@ -91,6 +70,9 @@ public class Monster {
         }
     }
     
+
+
+    
     // 몬스터와 미사일의 충돌 검사
     public boolean checkCollision(Rectangle missile) {
         return bounds.intersects(missile);
@@ -110,20 +92,14 @@ public class Monster {
         return isAlive; // 단순히 isAlive 반환
     }
 
-/*
-    // 몬스터가 죽었는지 여부 반환
-    public boolean isDead() {
-        return health <= 0;
+ // 몬스터가 살아있는지 확인
+    public boolean killMonster() {
+        return isAlive  = false; // 단순히 isAlive 반환
     }
-*/
+
     public Rectangle getBounds() {
         return bounds;
     }
 
-    /*
-    public List<Rectangle> getWeapons() {
-        return weapons;
-    }
-    */
 }
 

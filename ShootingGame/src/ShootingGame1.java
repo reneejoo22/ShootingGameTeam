@@ -19,25 +19,25 @@ import javax.swing.Timer;
 public class ShootingGame1 extends JPanel implements ActionListener, KeyListener {
     private Timer timer; // 게임 업데이트를 위한 타이머 
     private Image playerImage; // 플레이어 이미지
-    private Image backgroundImage; // 배경 이미지
+    //private Image backgroundImage; // 배경 이미지
     private Image monsterImage; // 몬스터 이미지
     private Image missileImage; // 미사일 이미지
     private Image monsterWeapon; // 몬스터 공격무기 이미지
+    private Image heartImage; // 플레이어 체력 아이콘 이미지
     
     private List<Rectangle> monsterWeapons; // 몬스터 공격무기를 추적하는 리스트
+    
     private final int MONSTER_WEAPON_SPEED = 5; // 몬스터 무기의 이동 속도
     private int monsterWeaponCooldown = 180; // 무기 발사 간격 (프레임 단위: 1초 = 60프레임)
     private int monsterWeaponTimer = 0; // 무기 발사 타이머
     
     private Player player; // 플레이어 객체 추가
     
-    
-    private int backgroundY; // 배경 Y 좌표
+    //private int backgroundY; // 배경 Y 좌표
     private boolean[] keys; // 키 입력 상태 배열
     private List<Rectangle> missiles; // 미사일을 추적하는 리스트
     
     private Monster monster;
-    private boolean monsterVisible; // 몬스터가 화면에 보이는지 여부 추가
     private int monsterRespawnDelay = 100; // 타이머 틱 기준 대기 시간
     private int monsterRespawnCounter = 0;  // 몬스터가 죽었을 때 다시 생성되기까지의 시간을 관리하는 변수
     
@@ -46,39 +46,36 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
     private int currentStageIndex; // 현재 스테이지 번호
     private int elapsedTime; // 각 스테이지에서 경과한 시간
     
+    private Background background; // Background 객체 추가
+
     
     public ShootingGame1() {
         playerImage = new ImageIcon("images/spaceship5.png").getImage();
-        backgroundImage = new ImageIcon("images/back2.png").getImage();
+        //backgroundImage = new ImageIcon("images/back2.png").getImage();
         monsterImage = new ImageIcon("images/monster1.png").getImage();
         missileImage = new ImageIcon("images/missile.png").getImage();
         monsterWeapon = new ImageIcon("images/monsterWeapon.png").getImage(); // 몬스터 공격무기 이미지
+        heartImage = new ImageIcon("images/heart.png").getImage();
+        background = new Background("images/back2.png");
         
      // Player 객체 초기화
         player = new Player(180, 600, playerImage, 3); // 위치, 이미지, 체력 전달
         
+        keys = new boolean[256];
+        missiles = new ArrayList<>();
+        		
         //몬스터 객체 초기화
         monster = new Monster((int) (Math.random() * (400 - monsterImage.getWidth(null))), 0, 
                 monsterImage.getWidth(null), monsterImage.getHeight(null), 3, 2, 1, monsterImage);
         
-        keys = new boolean[256];
-        missiles = new ArrayList<>();
-        
-        
-        monsterVisible = true; // 게임 시작 시 몬스터는 보이는 상태
-        
         // 몬스터의 무기
         monsterWeapons = new ArrayList<>();
         
-        
-        // 초기 배경 위치 설정 (이미지의 높이만큼 위로 올려 스크린 바깥에서 시작하도록)
-        backgroundY = 0;
-
-        //스테이지
+        //스테이지_ test용 이라서 일단은 10초씩으로 설정
         stages = new ArrayList<>();
-        stages.add(new Stage(1, 180)); // 스테이지 1, 3분(180초)
-        stages.add(new Stage(2, 180)); // 스테이지 2, 3분
-        stages.add(new Stage(3, 180)); // 스테이지 3, 3분
+        stages.add(new Stage(1, 10*67)); // 스테이지 1, 3분(180초)
+        stages.add(new Stage(2, 10*67)); // 스테이지 2, 3분
+        stages.add(new Stage(3, 10*67)); // 스테이지 3, 3분
         currentStageIndex = 0; // 첫 번째 스테이지 시작
         elapsedTime = 0; // 경과 시간 초기화
         
@@ -92,10 +89,50 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
 
  // 몬스터 재생성 메서드 수정_(스테이지 추가하면 1,2,3 마다 다르게 조정 필요, 몬스터 체력, 속도, 이미지) 
     private void spawnMonster() {
-    	monsterVisible = true;
-    	monster = new Monster((int) (Math.random() * (400 - monsterImage.getWidth(null))), 0, 
-                monsterImage.getWidth(null), monsterImage.getHeight(null), 3, 2, 1, monsterImage);
+        switch (currentStageIndex) {
+            case 0: // 스테이지 1
+                monster = new Monster(
+                    (int) (Math.random() * (400 - monsterImage.getWidth(null))), 
+                    0, 
+                    monsterImage.getWidth(null), 
+                    monsterImage.getHeight(null), 
+                    3, 2, 1, monsterImage
+                );
+                break;
+
+            case 1: // 스테이지 2
+                monster = new Monster(
+                    (int) (Math.random() * (400 - monsterImage.getWidth(null))), 
+                    0, 
+                    monsterImage.getWidth(null), 
+                    monsterImage.getHeight(null), 
+                    5, 2, 1, monsterImage
+                );
+                break;
+
+            case 2: // 스테이지 3
+                monster = new Monster(
+                    (int) (Math.random() * (400 - monsterImage.getWidth(null))), 
+                    0, 
+                    monsterImage.getWidth(null), 
+                    monsterImage.getHeight(null), 
+                    7, 2, 1, monsterImage
+                );
+                break;
+/*
+            default: // 이후 추가적인 스테이지
+                monster = new Monster(
+                    (int) (Math.random() * (400 - monsterImage.getWidth(null))), 
+                    0, 
+                    monsterImage.getWidth(null), 
+                    monsterImage.getHeight(null), 
+                    10, 5, 2, monsterImage
+                );
+                break;
+                */
+        }
     }
+
 
     
     // 몬스터 좌우로만 움직이는 업데이트 메서드
@@ -137,13 +174,22 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
         super.paintComponent(g);
 
         // 배경 그리기
-        g.drawImage(backgroundImage, 0, backgroundY, this);
-
+        background.draw(g);
+        
+        // 현재 스테이지 번호 그리기
+        g.setColor(java.awt.Color.WHITE); // 텍스트 색상 설정
+        g.drawString("현재 스테이지: " + (currentStageIndex + 1), 10, 20); // 좌측 상단에 스테이지 번호 표시
+        // 경과 시간 그리기
+        int elapsedSeconds = elapsedTime / 67; // 프레임을 초로 변환
+        g.drawString("경과 시간: " + elapsedSeconds + "초", 10, 40); // 경과 시간 표시
+     // 플레이어 체력 표시
+        drawPlayerHealth(g);
+        
         // 플레이어 그리기 (Player 클래스의 getX(), getY(), getImage() 활용)
         g.drawImage(playerImage, player.getX(), player.getY(), this);
 
         // 몬스터 그리기 (몬스터가 살아 있고 화면에 보이는 상태일 때만)
-        if (monster.isAlive() && monsterVisible) {
+        if (monster.isAlive() /*&& monsterVisible*/) {
             g.drawImage(monsterImage, monster.getBounds().x, monster.getBounds().y, this);
         }
 
@@ -156,18 +202,30 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
         for (Rectangle weapon : monsterWeapons) {
             g.drawImage(monsterWeapon, weapon.x, weapon.y, this);
         }
+        
+    }
+
+    private void drawPlayerHealth(Graphics g) {
+        int heartSize = 30; // 하트 이미지의 크기
+        int spacing = 10;  // 하트 간의 간격
+        int xStart = 280;   // 하트 시작 X 좌표
+        int yStart = 10;   // 하트 시작 Y 좌표
+
+        for (int i = 0; i < player.getHealth(); i++) {
+            g.drawImage(heartImage, xStart + i * (heartSize + spacing), yStart, heartSize, heartSize, this);
+        }
     }
 
 
    // 몬스터 위치에서 무기 발사
  // 몬스터 무기 발사 타이밍 확인
     private void spawnMonsterWeapon() {
-        
         monsterWeapons.add(new Rectangle(
             monster.getBounds().x + monsterImage.getWidth(null) / 2 - monsterWeapon.getWidth(null) / 2,
             monster.getBounds().y + monsterImage.getHeight(null),
             monsterWeapon.getWidth(null),
             monsterWeapon.getHeight(null)
+            //MONSTER_WEAPON_SPEED
         ));
     }
     
@@ -204,7 +262,6 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
             }
         }
     }
-
     
     //게임오버
     private void gameOver() {
@@ -212,8 +269,10 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
         System.out.println("Game Over!"); // 간단한 메시지 출력 (UI 추가 가능)
     }
 
-    //스테이지2: 몬스터가 좌우로 움직임/  스테이지3: 몬스터가 상하좌우로 움직임 
     public void actionPerformed(ActionEvent e) {
+        // 배경 업데이트
+        background.update();
+
         if (monster.isAlive()) {
             monsterWeaponTimer++;
             if (monsterWeaponTimer >= monsterWeaponCooldown) {
@@ -221,9 +280,20 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
                 monsterWeaponTimer = 0;
             }
             
-            //updateMonsterPosition(); // 스테이지2: 몬스터 좌우 이동 업데이트
-            updateMonsterPosition2();  //스테이지3: 몬스터 상하좌우
-            
+            // 몬스터 업데이트
+            switch (currentStageIndex) {
+                case 0: // 스테이지 1
+                    // 몬스터의 움직임을 여기서 처리하거나 추가할 수 있습니다.
+                    break;
+                
+                case 1: // 스테이지 2
+                    updateMonsterPosition(); // 몬스터 좌우 이동 업데이트
+                    break;
+                
+                case 2: // 스테이지 3
+                    updateMonsterPosition2(); // 몬스터 상하좌우 움직임
+                    break;
+            }
         } else if (monsterRespawnCounter > 0) {
             monsterRespawnCounter--;
             if (monsterRespawnCounter == 0) {
@@ -231,37 +301,44 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
             }
         }
 
-        
-        
         checkMonsterWeaponCollisions();
-        //spawnMonsterWeapon(); //난이도 99999
         updateMonsterWeapons();
         updatePlayerPosition();
         updateMissiles();
-        updateBackground();
         checkCollisions();
         checkPlayerMonsterCollision(); // 플레이어와 몬스터의 충돌 체크
-        
-     // 스테이지 시간 업데이트
-        /*
+
+        // 스테이지 시간 업데이트
         elapsedTime++;
-        stages.get(currentStageIndex).updateStageTime(elapsedTime);
-        
-        if (stages.get(currentStageIndex).isCleared()) {
-            currentStageIndex++;
-            if (currentStageIndex >= stages.size()) {
-                System.out.println("게임 승리!");
-                gameOver();
-            } else {
-                System.out.printf("스테이지 %d 클리어!\n", currentStageIndex);
-                elapsedTime = 0;
-            }
+
+        // 현재 스테이지 클리어 처리
+        if (elapsedTime >= stages.get(currentStageIndex).getTimeLimit()) {
+            stages.get(currentStageIndex).setCleared(true);
+            moveToNextStage(); // 다음 스테이지로 이동
         }
-*/
+
         repaint();
     }
 
 
+    private void moveToNextStage() {
+        currentStageIndex++;
+        if (currentStageIndex >= stages.size()) {
+            System.out.println("게임 승리!");
+            gameOver(); // 모든 스테이지를 클리어한 경우 게임 종료
+        } else {
+        	
+            System.out.printf("스테이지 %d 클리어!\n", currentStageIndex + 1);
+            monster.killMonster();
+            elapsedTime = 0; // 경과 시간 초기화
+            player.restoreHealth();	//스테이지 넘어가면 플레이어 체력회복
+            
+            // 몬스터 리스폰 및 추가 설정을 여기에 작성할 수 있습니다.
+            spawnMonster(); // 새로운 스테이지 시작 시 몬스터 생성
+        }
+    }
+    
+    
     // 플레이어의 위치를 업데이트하는 메소드
  // ShootingGame1 클래스
     private void updatePlayerPosition() {
@@ -292,22 +369,12 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
                 System.out.printf("몬스터를 맞췄어요!\n");
                 // 몬스터 체력이 0 이하가 되면 몬스터 사망
                 if (!monster.isAlive()) {
-                    monsterVisible = false; // 화면에서 사라짐
+                    //monsterVisible = false; // 화면에서 사라짐
                     monsterRespawnCounter = monsterRespawnDelay; // 리스폰 타이머 시작
                 }
 
                 break; // 한 번의 충돌만 처리
             }
-        }
-    }
-
-
-    // 배경의 위치를 업데이트하여 스크롤링 효과를 주는 메소드
-    public void updateBackground() {
-        backgroundY += 1; // 배경을 아래로 1픽셀씩 이동
-        if (backgroundY > 0) {
-            // 배경이 아래로 완전히 내려오면 다시 위로 설정
-            backgroundY = -backgroundImage.getHeight(null) + getHeight();
         }
     }
 

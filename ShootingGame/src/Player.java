@@ -1,4 +1,4 @@
-import java.awt.Graphics;
+//import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
@@ -15,6 +15,7 @@ public class Player {
         this.image = playerImage;
         this.health = initialHealth;
     }
+    
 
     public void moveLeft() { x -= speed; }
     public void moveRight() { x += speed; }
@@ -41,6 +42,7 @@ public class Player {
 
     public void decreaseHealth() { health--; }
     public void deadHealth() { health = 0; }
+    public void restoreHealth() { health = 3; };
 
     public Rectangle getBounds() {
         return new Rectangle(x, y, image.getWidth(null), image.getHeight(null));
