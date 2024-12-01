@@ -75,7 +75,15 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
         stages = new ArrayList<>();
         stages.add(new Stage(1, 10*67)); // 스테이지 1, 3분(180초)
         stages.add(new Stage(2, 10*67)); // 스테이지 2, 3분
-        stages.add(new Stage(3, 10*67)); // 스테이지 3, 3분
+        stages.add(new Stage(3, Integer.MAX_VALUE)); // 스테이지 3, 3분
+        
+        /*
+        stages = new ArrayList<>();
+        stages.add(new Stage(1, 180*67)); // 스테이지 1, 3분(180초)
+        stages.add(new Stage(2, 300*67)); // 스테이지 2, 5분
+        stages.add(new Stage(3, 10*67)); // 스테이지 3, 제한없
+         
+         * */
         currentStageIndex = 0; // 첫 번째 스테이지 시작
         elapsedTime = 0; // 경과 시간 초기화
         
