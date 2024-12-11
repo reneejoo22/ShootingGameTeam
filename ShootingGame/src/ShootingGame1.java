@@ -73,9 +73,9 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
         
         //스테이지_ test용 이라서 일단은 10초씩으로 설정
         stages = new ArrayList<>();
-        stages.add(new Stage(1, 10*67)); // 스테이지 1, 3분(180초)
-        stages.add(new Stage(2, 10*67)); // 스테이지 2, 3분
-        stages.add(new Stage(3, 10*67)); // 스테이지 3, 3분
+        stages.add(new Stage(1, 5*67)); // 스테이지 1, 3분(180초)
+        stages.add(new Stage(2, 5*67)); // 스테이지 2, 3분
+        stages.add(new Stage(3, 5*67)); // 스테이지 3, 3분
         
         /*
         stages = new ArrayList<>();
@@ -401,7 +401,7 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
     }
 
     public void keyTyped(KeyEvent e) { }
-
+/*
     public static void main(String[] args) {
         JFrame frame = new JFrame("Shooting Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -413,4 +413,5 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
         gamePanel.requestFocusInWindow();
         
     }
+    */
 }
