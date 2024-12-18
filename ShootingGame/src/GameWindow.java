@@ -11,13 +11,20 @@ public class GameWindow extends JFrame {
         // 기본 프레임 설정
         setTitle("Shooting Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 300);
+        setSize(700, 800);
         setLocationRelativeTo(null);
-        setLayout(new FlowLayout());
+        setLayout(null);  // 레이아웃을 null로 설정하여 위치를 직접 조정
 
+        // 배경 이미지 설정
+        setContentPane(new BackgroundPanel()); // 배경 패널 추가
+        
         // 버튼 생성
         onePlayerButton = new JButton("혼자 플레이하기");
         twoPlayerButton = new JButton("두 명 플레이하기");
+        
+        // 버튼 크기 설정
+        onePlayerButton.setBounds(450, 500, 400, 100);  // (x, y, width, height)
+        twoPlayerButton.setBounds(450, 500, 400, 100);  // (x, y, width, height)
 
         // 버튼 클릭 시 동작 설정
         onePlayerButton.addActionListener(new ActionListener() {
@@ -68,7 +75,7 @@ public class GameWindow extends JFrame {
         panel.add(portLabel);
         panel.add(portField);
 
-        JButton confirmButton = new JButton("Confirm");
+        JButton confirmButton = new JButton("연결");
         panel.add(new JLabel());
         panel.add(confirmButton);
 
@@ -94,24 +101,26 @@ public class GameWindow extends JFrame {
 
     // 혼자 플레이하기 버튼을 클릭하면 ShootingGame1을 실행하는 메서드
     private void launchShootingGame1() {
-        JFrame frame = new JFrame("Shooting Game");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ShootingGame1 gamePanel = new ShootingGame1();
-        frame.add(gamePanel);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        gamePanel.requestFocusInWindow();
-    }
-/*
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new GameWindow(); // 게임 창 실행
-            }
-        });
+    	dispose();
+        SwingUtilities.invokeLater(() -> new MainFrame());
     }
 
- */
+    // 배경 이미지를 표시하는 패널
+    class BackgroundPanel extends JPanel {
+        private Image backgroundImage;
+
+        public BackgroundPanel() {
+            backgroundImage = new ImageIcon("images/title.png").getImage(); // 이미지 경로 설정
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this); // 배경 이미지 그리기
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new GameWindow()); // 게임 창 실행
+    }
 }

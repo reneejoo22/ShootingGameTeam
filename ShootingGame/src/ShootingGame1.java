@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -19,7 +20,6 @@ import javax.swing.Timer;
 public class ShootingGame1 extends JPanel implements ActionListener, KeyListener {
     private Timer timer; // 게임 업데이트를 위한 타이머 
     private Image playerImage; // 플레이어 이미지
-    //private Image backgroundImage; // 배경 이미지
     private Image monsterImage; // 몬스터 이미지
     private Image missileImage; // 미사일 이미지
     private Image monsterWeapon; // 몬스터 공격무기 이미지
@@ -48,8 +48,12 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
     
     private Background background; // Background 객체 추가
 
+    private int score = 0;
+    private MainFrame mainFrame; // MainFrame 객체 추가
     
-    public ShootingGame1() {
+    public ShootingGame1(MainFrame mainFrame) {
+    	this.mainFrame = mainFrame;
+    	
         playerImage = new ImageIcon("images/spaceship5.png").getImage();
         //backgroundImage = new ImageIcon("images/back2.png").getImage();
         monsterImage = new ImageIcon("images/monster1.png").getImage();
@@ -73,15 +77,16 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
         
         //스테이지_ test용 이라서 일단은 10초씩으로 설정
         stages = new ArrayList<>();
-        stages.add(new Stage(1, 5*67)); // 스테이지 1, 3분(180초)
-        stages.add(new Stage(2, 5*67)); // 스테이지 2, 3분
-        stages.add(new Stage(3, 5*67)); // 스테이지 3, 3분
+        stages.add(new Stage(1, 10*67)); // 스테이지 1, 3분(180초)
+        stages.add(new Stage(2, 10*67)); // 스테이지 2, 3분
+        stages.add(new Stage(3, 10*67)); // 스테이지 3, 3분
         
         /*
+         //실제 게임용
         stages = new ArrayList<>();
         stages.add(new Stage(1, 180*67)); // 스테이지 1, 3분(180초)
         stages.add(new Stage(2, 300*67)); // 스테이지 2, 5분
-        stages.add(new Stage(3, 10*67)); // 스테이지 3, 제한없
+        stages.add(new Stage(3, Integer.MAX_VALUE)); // 스테이지 3, 제한없
          
          * */
         currentStageIndex = 0; // 첫 번째 스테이지 시작
@@ -171,7 +176,7 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
             // 몬스터와 플레이어 간 충돌 감지
             if (playerRect.intersects(monsterRect)) {
                 player.deadHealth(); // Player 죽음
-                System.out.println("몬스터에게 물렸어요! 게임 오버");
+                mainFrame.appendChatMessage("몬스터에게 물렸어요! 게임 오버"); // 메시지 출력
                 gameOver(); // 게임 오버 처리
             }
         }
@@ -262,7 +267,12 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
             if (weapon.intersects(playerRect)) {
                 it.remove(); // 충돌한 무기 제거
                 player.decreaseHealth(); // Player 클래스에서 체력 감소 처리
-                System.out.printf("으악 플레이어가 맞았어요! 플레이어 현재 체력 = %d\n", player.getHealth());
+                
+                int playerHealth = player.getHealth();  // 플레이어의 현재 체력
+                String message = String.format("으악 플레이어가 맞았어요!\n플레이어 현재 체력 = %d", playerHealth);
+
+                // 채팅창에 메시지 출력
+                mainFrame.appendChatMessage(message);
                 
                 if (player.getHealth() <= 0) {
                     gameOver(); // 체력이 0 이하가 되면 게임 종료
@@ -273,8 +283,17 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
     
     //게임오버
     private void gameOver() {
-        timer.stop();
-        System.out.println("Game Over!"); // 간단한 메시지 출력 (UI 추가 가능)
+        timer.stop(); // 게임 루프 중지
+        System.out.println("Game Over!"); // 콘솔 출력
+
+        // 점수와 함께 팝업창 출력
+        JOptionPane.showMessageDialog(this, 
+            "Game Over!\nYour Score: " + score, 
+            "Game Over", 
+            JOptionPane.INFORMATION_MESSAGE);
+
+        // 게임을 종료하거나 다른 동작 추가 가능
+        System.exit(0); // 게임 종료
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -332,11 +351,15 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
     private void moveToNextStage() {
         currentStageIndex++;
         if (currentStageIndex >= stages.size()) {
-            System.out.println("게임 승리!");
+            System.out.printf("\n게임 승리! 최종 점수 = %d\n", score);
             gameOver(); // 모든 스테이지를 클리어한 경우 게임 종료
         } else {
         	
-            System.out.printf("스테이지 %d 클리어!\n", currentStageIndex + 1);
+        	// 스테이지 클리어 메시지를 채팅창에 추가
+        	String message = String.format("=========스테이지 %d 클리어!=========", currentStageIndex + 1);
+        	// 채팅창에 메시지를 출력
+        	mainFrame.appendChatMessage(message);
+
             monster.killMonster();
             elapsedTime = 0; // 경과 시간 초기화
             player.restoreHealth();	//스테이지 넘어가면 플레이어 체력회복
@@ -374,7 +397,13 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
             if (monster.isAlive() && monster.checkCollision(missile)) {
                 it.remove(); // 미사일 제거
                 monster.decreaseHealth(); // 몬스터 체력 감소
-                System.out.printf("몬스터를 맞췄어요!\n");
+                
+                score += 5; // 점수 5점 증가
+                
+                int playerScore = score;
+                String message = String.format("몬스터를 맞췄어요! \n현재점수 = %d\n", score);
+                mainFrame.appendChatMessage(message);
+                
                 // 몬스터 체력이 0 이하가 되면 몬스터 사망
                 if (!monster.isAlive()) {
                     //monsterVisible = false; // 화면에서 사라짐
