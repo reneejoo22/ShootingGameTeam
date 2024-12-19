@@ -1,3 +1,4 @@
+//GameWindow.java
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -23,8 +24,8 @@ public class GameWindow extends JFrame {
         twoPlayerButton = new JButton("두 명 플레이하기");
         
         // 버튼 크기 설정
-        onePlayerButton.setBounds(450, 500, 400, 100);  // (x, y, width, height)
-        twoPlayerButton.setBounds(450, 500, 400, 100);  // (x, y, width, height)
+        onePlayerButton.setBounds(150, 500, 400, 100);  // (x, y, width, height)
+        twoPlayerButton.setBounds(150, 600, 400, 100);  // (x, y, width, height)
 
         // 버튼 클릭 시 동작 설정
         onePlayerButton.addActionListener(new ActionListener() {
@@ -101,7 +102,7 @@ public class GameWindow extends JFrame {
 
     // 혼자 플레이하기 버튼을 클릭하면 ShootingGame1을 실행하는 메서드
     private void launchShootingGame1() {
-    	dispose();
+        dispose();
         SwingUtilities.invokeLater(() -> new MainFrame());
     }
 

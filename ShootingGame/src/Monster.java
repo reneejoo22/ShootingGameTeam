@@ -1,10 +1,6 @@
-import java.awt.Color;
-import java.awt.Graphics;
+//Monster.java
 import java.awt.Image;
 import java.awt.Rectangle;
-//import java.util.ArrayList;
-//import java.util.Iterator;
-//import java.util.List;
 
 public class Monster {
     private Rectangle bounds; // 몬스터의 위치와 크기를 나타내는 Rectangle
@@ -15,26 +11,19 @@ public class Monster {
     private int directionY; // Y 이동 방향
     private Image image; // 몬스터 이미지
     private boolean isAlive; // 몬스터의 생사 여부
-    
 
     // 생성자
-    public Monster(int x, int y, int width, int height, int initialHealth, int speedX, int speedY, 
-    		Image image) {	//모습을 바꿔야해서 이미지를 받아야
-    	
-    	this.bounds = new Rectangle(x, y, image.getWidth(null), image.getHeight(null));
+    public Monster(int x, int y, int width, int height, int initialHealth, int speedX, int speedY, Image image) {
+        this.bounds = new Rectangle(x, y, width, height);
         this.health = initialHealth;
-        //this.monsterAlive = monsterAlive;
         this.speedX = speedX;
         this.speedY = speedY;
         this.directionX = 1;
         this.directionY = 1;
-        //this.weapons = new ArrayList<>();
-        
         this.image = image;
         this.isAlive = true;
-    
     }
- 
+
     // 몬스터 좌우로만 위치를 업데이트하는 메소드
     public void updatePosition(int screenWidth) {
         if (isAlive) {
@@ -46,13 +35,13 @@ public class Monster {
             }
         }
     }
-    
+
     // 몬스터의 위치를 업데이트하는 메서드 (상하좌우)
     public void updatePosition2(int screenWidth, int screenHeight) {
         if (isAlive) {
             // 몬스터의 X와 Y 위치 업데이트
-        	bounds.x += speedX * directionX;
-        	bounds.y += speedY * directionY;
+            bounds.x += speedX * directionX;
+            bounds.y += speedY * directionY;
 
             // 화면 경계에 도달하면 방향 전환
             if (bounds.x <= 0 || bounds.x + bounds.width >= screenWidth) {
@@ -69,16 +58,13 @@ public class Monster {
             }
         }
     }
-    
 
-
-    
     // 몬스터와 미사일의 충돌 검사
     public boolean checkCollision(Rectangle missile) {
         return bounds.intersects(missile);
     }
 
- // 몬스터 체력 감소
+    // 몬스터 체력 감소
     public void decreaseHealth() {
         if (health > 0) {
             health--;
@@ -92,14 +78,16 @@ public class Monster {
         return isAlive; // 단순히 isAlive 반환
     }
 
- // 몬스터가 살아있는지 확인
+    // 몬스터가 살아있는지 확인
     public boolean killMonster() {
-        return isAlive  = false; // 단순히 isAlive 반환
+        return isAlive = false; // 단순히 isAlive 반환
     }
 
     public Rectangle getBounds() {
         return bounds;
     }
 
+    public Image getImage() {
+        return image;
+    }
 }
-

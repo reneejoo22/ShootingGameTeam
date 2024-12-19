@@ -1,3 +1,4 @@
+//MainFrame.java
 import javax.swing.*;
 import javax.sound.sampled.*;
 import java.awt.*;
@@ -47,7 +48,7 @@ public class MainFrame extends JFrame {
         inputPanel.add(sendButton, BorderLayout.EAST);
         chatPanel.add(inputPanel, BorderLayout.SOUTH);
 
-     // 버튼 클릭 이벤트 처리
+        // 버튼 클릭 이벤트 처리
         sendButton.addActionListener(e -> sendMessage());
         
         // 버튼 클릭 이벤트 처리
@@ -78,7 +79,7 @@ public class MainFrame extends JFrame {
 
         add(splitPane, BorderLayout.CENTER);
 
-     // 게임 화면 클릭 시 자동으로 포커스가 게임 화면으로 가도록 수정
+        // 게임 화면 클릭 시 자동으로 포커스가 게임 화면으로 가도록 수정
         gamePanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -87,7 +88,7 @@ public class MainFrame extends JFrame {
             }
         });
 
-     // 채팅 입력창에 포커스가 있을 때만 키 이벤트 처리
+        // 채팅 입력창에 포커스가 있을 때만 키 이벤트 처리
         chatInput.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -100,7 +101,7 @@ public class MainFrame extends JFrame {
             }
         });
 
-     // 게임 화면에서 특정 키 입력 시 채팅 모드 종료
+        // 게임 화면에서 특정 키 입력 시 채팅 모드 종료
         gamePanel.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -115,7 +116,7 @@ public class MainFrame extends JFrame {
             }
         });
         
-     // 게임 패널이 포커스를 받을 수 있도록 명시적으로 설정
+        // 게임 패널이 포커스를 받을 수 있도록 명시적으로 설정
         gamePanel.setFocusable(true);
         gamePanel.requestFocusInWindow(); // 처음에 포커스를 게임 화면으로 설정
         
@@ -136,7 +137,7 @@ public class MainFrame extends JFrame {
         menuBar.add(gameMenu);
         setJMenuBar(menuBar);
 
-     // 화면이 켜지자마자 배경 음악을 재생
+        // 화면이 켜지자마자 배경 음악을 재생
         playBackgroundMusic();
         
         setVisible(true);
@@ -161,6 +162,8 @@ public class MainFrame extends JFrame {
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(musicFile);
             backgroundMusic = AudioSystem.getClip();
             backgroundMusic.open(audioStream);
+            FloatControl volumeControl = (FloatControl) backgroundMusic.getControl(FloatControl.Type.MASTER_GAIN);
+            volumeControl.setValue(-35.0f); // 볼륨을 줄임
             backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY); // 반복 재생
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
