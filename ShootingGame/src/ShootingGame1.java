@@ -1,3 +1,4 @@
+//ShootingGame1.java
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -11,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -51,6 +51,9 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
 
     private int score = 0;
     private MainFrame mainFrame; // MainFrame 객체 추가
+
+    private final int MISSILE_WIDTH = 25; // 미사일의 너비를 명시적으로 설정
+    private final int MISSILE_HEIGHT = 30; // 미사일의 높이를 명시적으로 설정
     
     public ShootingGame1(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -61,11 +64,11 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
             new ImageIcon("images/stage 2 zombie.png").getImage().getScaledInstance(120, 160, Image.SCALE_SMOOTH),
             new ImageIcon("images/stage 3 zombie.png").getImage().getScaledInstance(120, 160, Image.SCALE_SMOOTH)
         };
-        missileImage = new ImageIcon("images/bullet1.png").getImage().getScaledInstance(25, 30, Image.SCALE_SMOOTH);
+        missileImage = new ImageIcon("images/bullet1.png").getImage().getScaledInstance(MISSILE_WIDTH, MISSILE_HEIGHT, Image.SCALE_SMOOTH);
         monsterWeapon = new ImageIcon("images/zombie's fireball.png").getImage().getScaledInstance(50, 65, Image.SCALE_SMOOTH); // 몬스터 공격무기 이미지
         heartImage = new ImageIcon("images/heart.png").getImage();
         background = new Background("images/back2.png");
-        bulletImage = new ImageIcon("images/bullet1.png").getImage().getScaledInstance(25, 30, Image.SCALE_SMOOTH); // 총알 이미지
+        bulletImage = new ImageIcon("images/bullet1.png").getImage().getScaledInstance(MISSILE_WIDTH, MISSILE_HEIGHT, Image.SCALE_SMOOTH); // 총알 이미지
 
         player = new Player(180, 600, playerImage, 3); // 위치, 이미지, 체력 전달
         
@@ -94,8 +97,9 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
 
     private void spawnMonster() {
         int stage = currentStageIndex % monsterImages.length;
+        int x = (int) (Math.random() * (getWidth() - monsterImages[stage].getWidth(null))); // 좌우 랜덤 위치
         monster = new Monster(
-            (int) (Math.random() * (400 - monsterImages[stage].getWidth(null))), 
+            x, 
             0, 
             120, // 몬스터 이미지의 너비
             140, // 몬스터 이미지의 높이
@@ -112,6 +116,12 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
     private void updateMonsterPosition2() {
         if (monster.isAlive()) {
             monster.updatePosition2(getWidth(), getHeight());
+        }
+    }
+    
+    private void updateMonsterPosition3() {
+        if (monster.isAlive()) {
+            monster.updatePosition3(getWidth(), getHeight());
         }
     }
     
@@ -249,11 +259,11 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
                     break;
                 
                 case 1:
-                    updateMonsterPosition();
+                    updateMonsterPosition2();
                     break;
                 
                 case 2:
-                    updateMonsterPosition2();
+                    updateMonsterPosition3();
                     break;
             }
         } else if (monsterRespawnCounter > 0) {
@@ -338,8 +348,15 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             if (!player.isReloading()) {
                 if (player.shoot()) {
-                    missiles.add(new Rectangle(player.getX() + player.getWidth() / 2 - missileImage.getWidth(null) / 2,
-                                               player.getY(), missileImage.getWidth(null), missileImage.getHeight(null)));
+                    // 올바른 크기의 미사일 Rectangle 생성
+                    Rectangle newMissile = new Rectangle(
+                        player.getX() + player.getWidth() / 2 - MISSILE_WIDTH / 2,
+                        player.getY(), 
+                        MISSILE_WIDTH, 
+                        MISSILE_HEIGHT
+                    );
+                    missiles.add(newMissile);
+                    System.out.println("Missile fired: " + newMissile); // 디버깅 정보 추가
                 }
             }
         }

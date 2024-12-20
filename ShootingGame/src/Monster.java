@@ -36,8 +36,25 @@ public class Monster {
         }
     }
 
-    // 몬스터의 위치를 업데이트하는 메서드 (상하좌우)
+    // 몬스터의 위치를 업데이트하는 메서드 (상하좌우 규칙적)
     public void updatePosition2(int screenWidth, int screenHeight) {
+        if (isAlive) {
+            // 몬스터의 X와 Y 위치 업데이트
+            bounds.x += speedX * directionX;
+            bounds.y += speedY * directionY;
+
+            // 화면 경계에 도달하면 방향 전환
+            if (bounds.x <= 0 || bounds.x + bounds.width >= screenWidth) {
+                directionX *= -1; // X 방향 반전
+            }
+            if (bounds.y <= 0 || bounds.y + bounds.height >= screenHeight) {
+                directionY *= -1; // Y 방향 반전
+            }
+        }
+    }
+
+ // 몬스터의 위치를 업데이트하는 메서드 (상하좌우 불규칙적)
+    public void updatePosition3(int screenWidth, int screenHeight) {
         if (isAlive) {
             // 몬스터의 X와 Y 위치 업데이트
             bounds.x += speedX * directionX;
@@ -52,16 +69,24 @@ public class Monster {
             }
 
             // 일정 확률로 랜덤한 방향으로 변경
-            if (Math.random() < 0.01) { // 1% 확률로 방향 변경
+            if (Math.random() < 0.05) { // 5% 확률로 방향 변경
                 directionX = (Math.random() < 0.5) ? 1 : -1; // 랜덤 X 방향
                 directionY = (Math.random() < 0.5) ? 1 : -1; // 랜덤 Y 방향
+            }
+
+            // 추가로 불규칙한 움직임을 위해 속도 변경
+            if (Math.random() < 0.05) { // 5% 확률로 속도 변경
+                speedX = (int) (Math.random() * 5) + 1; // 1부터 5까지 랜덤 속도
+                speedY = (int) (Math.random() * 5) + 1; // 1부터 5까지 랜덤 속도
             }
         }
     }
 
     // 몬스터와 미사일의 충돌 검사
     public boolean checkCollision(Rectangle missile) {
-        return bounds.intersects(missile);
+        boolean collision = bounds.intersects(missile);
+        System.out.println("Checking collision: " + collision + " with missile: " + missile); // 디버깅 정보 추가
+        return collision;
     }
 
     // 몬스터 체력 감소
