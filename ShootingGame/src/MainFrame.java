@@ -3,8 +3,12 @@ import javax.swing.*;
 import javax.sound.sampled.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 public class MainFrame extends JFrame {
     private ShootingGame1 gamePanel; // 게임 화면
@@ -19,12 +23,23 @@ public class MainFrame extends JFrame {
     private boolean isMusicOn = true; // 음악이 켜져 있는지 확인하는 변수
     private JMenuItem musicMenuItem; // 메뉴 항목
 
-    public MainFrame() {
+    private Client client; // 클라이언트 객체
+    private String playerId;  // 멤버 변수로 playerId 추가
+    private String ipAddress;  // 멤버 변수로 playerId 추가
+    private int port;  // 멤버 변수로 playerId 추가
+    
+    private Socket socket;
+    private BufferedReader input;
+    private PrintWriter output;
+
+    
+    public MainFrame(String playerId, String ipAddress, int port) {
         setTitle("Shooting Game with Chat");
         setSize(700, 800); // 전체 창 크기 설정
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-
+        
+        
         // 게임 패널 초기화
         gamePanel = new ShootingGame1(this);
         gamePanel.setFocusable(true); // 게임 패널에서 키 입력 받기
@@ -47,9 +62,10 @@ public class MainFrame extends JFrame {
         inputPanel.add(chatInput, BorderLayout.CENTER);
         inputPanel.add(sendButton, BorderLayout.EAST);
         chatPanel.add(inputPanel, BorderLayout.SOUTH);
+        
 
         // 버튼 클릭 이벤트 처리
-        sendButton.addActionListener(e -> sendMessage());
+        //sendButton.addActionListener(e -> sendMessage());
         
         // 버튼 클릭 이벤트 처리
         sendButton.addActionListener(new ActionListener() {
@@ -140,6 +156,15 @@ public class MainFrame extends JFrame {
         // 화면이 켜지자마자 배경 음악을 재생
         playBackgroundMusic();
         
+     // 전달받은 playerId를 멤버 변수에 저장
+        this.playerId = playerId;
+        this.ipAddress = ipAddress;
+        this.port = port;
+        
+        // 클라이언트 생성 및 서버 연결
+        client = new Client(playerId, ipAddress, port, chatArea, this);
+        new Thread(() -> client.start()).start();  // 클라이언트의 start() 메소드 호출
+        
         setVisible(true);
     }
 
@@ -177,7 +202,8 @@ public class MainFrame extends JFrame {
         }
     }
 
-    // 메시지 전송 메서드
+    /*
+    // 메시지 전송 메서드_1인모드
     private void sendMessage() {
         String message = chatInput.getText().trim();
         if (!message.isEmpty()) {
@@ -185,13 +211,58 @@ public class MainFrame extends JFrame {
             chatInput.setText(""); // 입력창 초기화
         }
     }
+    */
+    
+ // 메시지 보내기_2인모드
+    private void sendMessage() {
+        String message = chatInput.getText();
+        if (!message.isEmpty()) {
+            chatArea.append(playerId + ": " + message + "\n"); // 플레이어 아이디와 메시지를 채팅창에 표시
+            client.sendMessage(message); // 클라이언트를 통해 메시지 전송
+            chatInput.setText(""); // 입력창 초기화
+        }
+    }
+
+    public void start() {
+        try {
+            socket = new Socket(ipAddress, port);
+            input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            output = new PrintWriter(socket.getOutputStream(), true);
+
+            // 클라이언트 ID 전송
+            output.println(playerId);
+
+            // 서버로부터 메시지 수신
+            String message;
+            while ((message = input.readLine()) != null) {
+                // UI 스레드에서 chatArea를 업데이트
+                final String finalMessage = message;
+                if (chatArea != null) {
+                    SwingUtilities.invokeLater(() -> chatArea.append(finalMessage + "\n"));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    
+
+
+
+    
+ // 나중에 서로 점수 공유할 때 슈팅게임1 클래스에서 필요.
+    public Client getClient() {
+        return client; // Client 객체 반환
+    }
 
     // MainFrame 클래스에 메시지 출력 메서드 추가
     public void appendChatMessage(String message) {
         chatArea.append(message + "\n");
     }
-
+    
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MainFrame());
+        // 예시로 Player1, 127.0.0.1, 12345로 MainFrame을 실행
+        SwingUtilities.invokeLater(() -> new MainFrame("Player1", "127.0.0.1", 12345));
     }
 }

@@ -32,7 +32,7 @@ public class GameWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // 혼자 플레이 버튼 클릭 시 ShootingGame1을 실행
-                launchShootingGame1();
+                launchShootingGame1("1","0",0);
             }
         });
 
@@ -86,12 +86,30 @@ public class GameWindow extends JFrame {
                 String playerId = idField.getText();
                 String ipAddress = ipField.getText();
                 String portNumber = portField.getText();
-
+                
                 System.out.println("Player ID: " + playerId);
                 System.out.println("IP Address: " + ipAddress);
                 System.out.println("Port Number: " + portNumber);
 
-                // 예시: 입력 값을 처리하여 실제 게임을 시작하거나 서버와 연결하는 로직을 추가 가능
+                try {
+                    // 서버 생성 및 실행
+                    int port = Integer.parseInt(portNumber);
+                    Server server = new Server(port);
+                    new Thread(server::start).start(); // 서버 비동기로 시작
+
+                    // 서버가 준비될 시간을 약간 기다림 (선택적)
+                    Thread.sleep(500);
+
+
+                    // 슈팅 게임 화면 시작
+                    launchShootingGame1(playerId, ipAddress, port);
+
+                } catch (NumberFormatException ex) {
+                    System.err.println("유효하지 않은 포트 번호입니다.");
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+
                 twoPlayerFrame.dispose(); // 입력 창 닫기
             }
         });
@@ -100,10 +118,10 @@ public class GameWindow extends JFrame {
         twoPlayerFrame.setVisible(true);
     }
 
-    // 혼자 플레이하기 버튼을 클릭하면 ShootingGame1을 실행하는 메서드
-    private void launchShootingGame1() {
-        dispose();
-        SwingUtilities.invokeLater(() -> new MainFrame());
+ // 게임 시작 메서드
+    private void launchShootingGame1(String playerId, String ipAddress, int port) {
+        dispose(); // 현재 창을 닫고
+        SwingUtilities.invokeLater(() -> new MainFrame(playerId, ipAddress, port)); // MainFrame에 클라이언트 정보 전달
     }
 
     // 배경 이미지를 표시하는 패널

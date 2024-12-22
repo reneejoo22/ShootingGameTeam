@@ -18,3 +18,8 @@
 /ShootingGame1.class
 /Stage.class
 /MonsterWeapon.class
+/Server.class
+/Client.class
+/Server$ClientHandler.class
+/MainFrame$7.class
+/MainFrame$8.class

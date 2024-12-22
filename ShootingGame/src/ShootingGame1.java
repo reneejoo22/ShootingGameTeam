@@ -55,8 +55,11 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
     private final int MISSILE_WIDTH = 25; // 미사일의 너비를 명시적으로 설정
     private final int MISSILE_HEIGHT = 30; // 미사일의 높이를 명시적으로 설정
     
+    //private Client client;   // 클라이언트 객체
+    
     public ShootingGame1(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
+        //this.client = client;
         
         playerImage = new ImageIcon("images/soldier.png").getImage().getScaledInstance(100, 140, Image.SCALE_SMOOTH);
         monsterImages = new Image[] {
@@ -80,9 +83,9 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
         monsterWeapons = new ArrayList<>();
         
         stages = new ArrayList<>();
-        stages.add(new Stage(1, 10*67)); // 스테이지 1, 3분(180초)
-        stages.add(new Stage(2, 10*67)); // 스테이지 2, 3분
-        stages.add(new Stage(3, 10*67)); // 스테이지 3, 3분
+        stages.add(new Stage(1, 180*67)); // 스테이지 1, 3분(180초)
+        stages.add(new Stage(2, 180*67)); // 스테이지 2, 3분
+        stages.add(new Stage(3, Integer.MAX_VALUE)); // 스테이지 3, 무한 시간
         
         currentStageIndex = 0; // 첫 번째 스테이지 시작
         elapsedTime = 0; // 경과 시간 초기화
@@ -235,14 +238,42 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
         timer.stop();
         System.out.println("Game Over!");
 
+        // 내 점수 표시
         JOptionPane.showMessageDialog(this, 
             "Game Over!\nYour Score: " + score, 
             "Game Over", 
             JOptionPane.INFORMATION_MESSAGE);
 
+        // MainFrame에서 client 객체를 통해 점수 전송 및 결과 수신
+        String response = mainFrame.getClient().sendGameOver(score);
+
+        // 서버 결과에 따라 메시지 표시
+        if (response.startsWith("RESULT:")) {
+            String[] parts = response.split(":");
+            String result = parts[1]; // WIN, LOSE, TIE
+            int myScore = Integer.parseInt(parts[2]);
+            int opponentScore = Integer.parseInt(parts[3]);
+
+            // 팝업창으로 결과 표시
+            JOptionPane.showMessageDialog(this, 
+                "결과: " + result + "\n내 점수: " + myScore + "\n상대방 점수: " + opponentScore, 
+                "게임 결과", 
+                JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            // 오류 메시지 표시
+            JOptionPane.showMessageDialog(this, 
+                "Error: 서버에서 결과 확인 안됨", 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
+        }
+
+        // 게임 종료
         System.exit(0);
     }
 
+
+
+   
     public void actionPerformed(ActionEvent e) {
         background.update();
 
@@ -341,6 +372,10 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
                 break;
             }
         }
+    }
+    
+    public int getScore() {
+        return score;
     }
 
     public void keyPressed(KeyEvent e) {
