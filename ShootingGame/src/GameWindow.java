@@ -14,25 +14,34 @@ public class GameWindow extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(700, 800);
         setLocationRelativeTo(null);
-        setLayout(null);  // 레이아웃을 null로 설정하여 위치를 직접 조정
 
         // 배경 이미지 설정
-        setContentPane(new BackgroundPanel()); // 배경 패널 추가
-        
+        BackgroundPanel backgroundPanel = new BackgroundPanel();
+        backgroundPanel.setLayout(new GridBagLayout()); // 배경 패널에 GridBagLayout 설정
+
         // 버튼 생성
         onePlayerButton = new JButton("혼자 플레이하기");
         twoPlayerButton = new JButton("두 명 플레이하기");
-        
-        // 버튼 크기 설정
-        onePlayerButton.setBounds(150, 500, 400, 100);  // (x, y, width, height)
-        twoPlayerButton.setBounds(150, 600, 400, 100);  // (x, y, width, height)
+
+        // GridBagConstraints 설정
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(45, 10, 10, 10); // 위쪽 여백을 줄여서 버튼을 위로 이동
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER; // 중앙 정렬
+
+        // 버튼을 배경 패널에 추가
+        backgroundPanel.add(onePlayerButton, gbc);
+
+        gbc.gridy = 1;
+        backgroundPanel.add(twoPlayerButton, gbc);
 
         // 버튼 클릭 시 동작 설정
         onePlayerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // 혼자 플레이 버튼 클릭 시 ShootingGame1을 실행
-                launchShootingGame1("1","0",0);
+                launchShootingGame1("1", "0", 0);
             }
         });
 
@@ -44,9 +53,8 @@ public class GameWindow extends JFrame {
             }
         });
 
-        // 버튼을 프레임에 추가
-        add(onePlayerButton);
-        add(twoPlayerButton);
+        // 배경 패널을 프레임의 콘텐츠 패널로 설정
+        setContentPane(backgroundPanel);
 
         setVisible(true);
     }
@@ -86,7 +94,7 @@ public class GameWindow extends JFrame {
                 String playerId = idField.getText();
                 String ipAddress = ipField.getText();
                 String portNumber = portField.getText();
-                
+
                 System.out.println("Player ID: " + playerId);
                 System.out.println("IP Address: " + ipAddress);
                 System.out.println("Port Number: " + portNumber);
@@ -99,7 +107,6 @@ public class GameWindow extends JFrame {
 
                     // 서버가 준비될 시간을 약간 기다림 (선택적)
                     Thread.sleep(500);
-
 
                     // 슈팅 게임 화면 시작
                     launchShootingGame1(playerId, ipAddress, port);
@@ -118,7 +125,7 @@ public class GameWindow extends JFrame {
         twoPlayerFrame.setVisible(true);
     }
 
- // 게임 시작 메서드
+    // 게임 시작 메서드
     private void launchShootingGame1(String playerId, String ipAddress, int port) {
         dispose(); // 현재 창을 닫고
         SwingUtilities.invokeLater(() -> new MainFrame(playerId, ipAddress, port)); // MainFrame에 클라이언트 정보 전달

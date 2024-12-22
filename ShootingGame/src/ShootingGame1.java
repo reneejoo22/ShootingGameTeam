@@ -61,7 +61,7 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
         this.mainFrame = mainFrame;
         //this.client = client;
         
-        playerImage = new ImageIcon("images/soldier.png").getImage().getScaledInstance(100, 140, Image.SCALE_SMOOTH);
+        playerImage = new ImageIcon("images/PlayerSoldier.png").getImage().getScaledInstance(150, 140, Image.SCALE_SMOOTH);
         monsterImages = new Image[] {
             new ImageIcon("images/stage 1 zombie.png").getImage().getScaledInstance(120, 160, Image.SCALE_SMOOTH),
             new ImageIcon("images/stage 2 zombie.png").getImage().getScaledInstance(120, 160, Image.SCALE_SMOOTH),
@@ -133,12 +133,14 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
             Rectangle playerRect = player.getBounds();
             Rectangle monsterRect = monster.getBounds();
             
-            if (playerRect.intersects(monsterRect)) {
-                player.deadHealth();
-                mainFrame.appendChatMessage("몬스터에게 물렸어요! 게임 오버");
-                gameOver();
+            if (playerRect.intersects(monsterRect)) { // 정확히 충돌했을 때만 데미지
+                player.decreaseHealth();
+                mainFrame.appendChatMessage("몬스터에게 물렸어요! 현재 체력: " + player.getHealth());
+                if (player.getHealth() <= 0) {
+                    gameOver();
+                }
             }
-        }
+    }
     }
 
     public void paintComponent(Graphics g) {
@@ -218,9 +220,9 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
             Rectangle weapon = it.next();
             Rectangle playerRect = player.getBounds();
             
-            if (weapon.intersects(playerRect)) {
-                it.remove();
-                player.decreaseHealth();
+            if (playerRect.intersects(weapon)) {
+            	 it.remove();
+            	 player.decreaseHealth();
                 
                 int playerHealth = player.getHealth();
                 String message = String.format("으악 플레이어가 맞았어요!\n플레이어 현재 체력 = %d", playerHealth);
