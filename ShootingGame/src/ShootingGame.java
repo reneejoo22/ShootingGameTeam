@@ -1,4 +1,4 @@
-
+/*
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -115,3 +115,4 @@ public class ShootingGame extends JPanel implements ActionListener, KeyListener 
         gamePanel.requestFocusInWindow(); // 키 입력을 받기 위해 게임 패널에 포커스 요청
     }
 }
+*/
