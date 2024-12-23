@@ -34,7 +34,7 @@ public class MainFrame extends JFrame {
 
     
     public MainFrame(String playerId, String ipAddress, int port) {
-        setTitle("Shooting Game with Chat");
+        setTitle("Forge(포지)");
         setSize(700, 800); // 전체 창 크기 설정
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -188,7 +188,7 @@ public class MainFrame extends JFrame {
             backgroundMusic = AudioSystem.getClip();
             backgroundMusic.open(audioStream);
             FloatControl volumeControl = (FloatControl) backgroundMusic.getControl(FloatControl.Type.MASTER_GAIN);
-            volumeControl.setValue(-35.0f); // 볼륨을 줄임
+            volumeControl.setValue(-20.0f); // 볼륨을 줄임
             backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY); // 반복 재생
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();

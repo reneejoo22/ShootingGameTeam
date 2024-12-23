@@ -137,7 +137,7 @@ public class ShootingGame1 extends JPanel implements ActionListener, KeyListener
                 player.decreaseHealth();
                 mainFrame.appendChatMessage("몬스터에게 물렸어요! 현재 체력: " + player.getHealth());
                 if (player.getHealth() <= 0) {
-                    gameOver();
+                    //gameOver();
                 }
             }
     }
